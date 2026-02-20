@@ -1,0 +1,18 @@
+{
+  "name": "Ключи — Illusionist OS",
+  "short_name": "Ключи",
+  "description": "Генератор и управление лицензионными ключами",
+  "start_url": "./ГЕНЕРАТОР-С-ВРЕМЕННЫМИ-КЛЮЧАМИ.html",
+  "display": "standalone",
+  "background_color": "#0a0a0f",
+  "theme_color": "#0a0a0f",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect fill='%230a0a0f' width='512' height='512' rx='100'/><text y='340' x='256' text-anchor='middle' font-size='280'>🔑</text></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

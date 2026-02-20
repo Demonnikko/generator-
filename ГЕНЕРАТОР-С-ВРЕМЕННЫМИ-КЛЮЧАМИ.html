@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Ключи">
+  <meta name="theme-color" content="#0a0a0f">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%230a0a0f' width='100' height='100' rx='20'/><text y='68' x='50' text-anchor='middle' font-size='55'>🔑</text></svg>">
+  <link rel="manifest" href="manifest.json">
+  <title>Ключи — Illusionist OS</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --gold: #f59e0b;
+      --gold-light: #fbbf24;
+      --bg: #0a0a0f;
+      --bg2: rgba(26,26,46,0.95);
+      --border: rgba(245,158,11,0.25);
+      --text: #f8fafc;
+      --text2: rgba(148,163,184,0.8);
+      --green: #22c55e;
+      --red: #ef4444;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      min-height: 100dvh;
+      -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent;
+      overscroll-behavior: none;
+    }
+
+    /* ===== TABS ===== */
+    .tabs {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      background: rgba(10,10,15,0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid var(--border);
+      padding-bottom: var(--safe-bottom);
+      z-index: 100;
+    }
+    .tab {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      padding: 10px 4px 6px;
+      color: var(--text2);
+      font-size: 10px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: color 0.2s;
+      border: none;
+      background: none;
+      -webkit-appearance: none;
+    }
+    .tab.active { color: var(--gold); }
+    .tab-icon { font-size: 22px; }
+
+    /* ===== PAGES ===== */
+    .page {
+      display: none;
+      padding: calc(var(--safe-top) + 16px) 16px calc(70px + var(--safe-bottom) + 16px);
+      min-height: 100vh;
+      min-height: 100dvh;
+    }
+    .page.active { display: block; }
+
+    .page-title {
+      font-size: 28px;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 20px;
+    }
+
+    /* ===== CARDS ===== */
+    .card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    .card-title {
+      color: var(--gold);
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 14px;
+    }
+
+    /* ===== FORM ===== */
+    .form-group { margin-bottom: 14px; }
+    .form-label {
+      display: block;
+      color: var(--text2);
+      font-size: 13px;
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+    .form-input, .form-select {
+      width: 100%;
+      padding: 14px 16px;
+      background: rgba(0,0,0,0.4);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+      font-size: 16px;
+      font-family: inherit;
+      -webkit-appearance: none;
+      appearance: none;
+      transition: border-color 0.2s;
+    }
+    .form-input:focus, .form-select:focus {
+      outline: none;
+      border-color: var(--gold);
+    }
+    .form-select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23f59e0b'%3E%3Cpath d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+      padding-right: 40px;
+    }
+
+    /* ===== BUTTONS ===== */
+    .btn {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: transform 0.15s, opacity 0.15s;
+      -webkit-appearance: none;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn:disabled { opacity: 0.5; pointer-events: none; }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      color: #0a0a0f;
+    }
+    .btn-secondary {
+      background: rgba(245,158,11,0.15);
+      color: var(--gold);
+      margin-top: 10px;
+    }
+    .btn-danger {
+      background: rgba(239,68,68,0.15);
+      color: var(--red);
+    }
+    .btn-small {
+      width: auto;
+      padding: 8px 14px;
+      font-size: 13px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* ===== KEY DISPLAY ===== */
+    .key-display {
+      background: rgba(0,0,0,0.4);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 16px 0;
+      text-align: center;
+      font-family: 'SF Mono', 'Courier New', monospace;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: 2px;
+      word-break: break-all;
+      min-height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ===== STATS ===== */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .stat-card {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+    }
+    .stat-value {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--gold);
+    }
+    .stat-label {
+      font-size: 11px;
+      color: var(--text2);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 2px;
+    }
+
+    /* ===== LICENSE LIST ===== */
+    .search-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .search-bar .form-input { flex: 1; padding: 12px 16px; }
+
+    .filter-row {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 14px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .filter-row::-webkit-scrollbar { display: none; }
+    .filter-chip {
+      flex-shrink: 0;
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+      background: rgba(255,255,255,0.05);
+      color: var(--text2);
+      border: 1px solid rgba(255,255,255,0.1);
+      cursor: pointer;
+      font-family: inherit;
+      -webkit-appearance: none;
+      transition: all 0.2s;
+    }
+    .filter-chip.active {
+      background: rgba(245,158,11,0.2);
+      color: var(--gold);
+      border-color: var(--gold);
+    }
+
+    .license-card {
+      background: rgba(0,0,0,0.2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 10px;
+      transition: background 0.2s;
+    }
+    .license-card.expired { border-color: rgba(239,68,68,0.3); }
+    .license-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+    .license-app { font-weight: 600; font-size: 15px; }
+    .license-buyer { color: var(--text2); font-size: 13px; margin-top: 2px; }
+    .license-key {
+      font-family: 'SF Mono', 'Courier New', monospace;
+      font-size: 12px;
+      color: var(--gold);
+      background: rgba(0,0,0,0.3);
+      padding: 6px 10px;
+      border-radius: 6px;
+      margin-top: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .license-meta {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--text2);
+    }
+    .license-actions {
+      display: flex;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .badge-active { background: rgba(34,197,94,0.2); color: var(--green); }
+    .badge-pending { background: rgba(234,179,8,0.2); color: #eab308; }
+    .badge-expired { background: rgba(239,68,68,0.2); color: var(--red); }
+
+    /* ===== APP STATS ===== */
+    .app-stat-card {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 10px;
+    }
+    .app-stat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .app-stat-name { font-weight: 600; color: var(--gold); font-size: 15px; }
+    .app-stat-revenue { font-weight: 700; color: var(--green); font-size: 16px; }
+    .app-stat-details {
+      display: flex;
+      gap: 16px;
+      font-size: 13px;
+      color: var(--text2);
+    }
+
+    /* ===== TOAST ===== */
+    .toast {
+      position: fixed;
+      top: calc(var(--safe-top) + 16px);
+      left: 16px;
+      right: 16px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-size: 14px;
+      font-weight: 500;
+      z-index: 200;
+      transform: translateY(-120%);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      text-align: center;
+    }
+    .toast.show { transform: translateY(0); }
+
+    /* ===== MODAL ===== */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 150;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .modal-overlay.show { display: flex; }
+    .modal {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 20px 20px 0 0;
+      padding: 24px 20px calc(var(--safe-bottom) + 20px);
+      width: 100%;
+      max-width: 500px;
+      max-height: 85vh;
+      overflow-y: auto;
+      animation: slideUp 0.3s ease;
+    }
+    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+    .modal-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--gold);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .modal-handle {
+      width: 36px;
+      height: 4px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 2px;
+      margin: 0 auto 16px;
+    }
+
+    /* ===== TIMER ===== */
+    .countdown {
+      font-family: 'SF Mono', 'Courier New', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    /* ===== CONNECTION STATUS ===== */
+    .conn-status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text2);
+      margin-bottom: 16px;
+    }
+    .conn-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--text2);
+    }
+    .conn-dot.ok { background: var(--green); }
+    .conn-dot.err { background: var(--red); }
+
+    select option { background: #1a1a2e; color: #fff; }
+  </style>
+
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+</head>
+
+<body>
+
+<!-- ===== TAB BAR ===== -->
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('create')">
+    <span class="tab-icon">+</span>
+    <span>Создать</span>
+  </button>
+  <button class="tab" onclick="switchTab('licenses')">
+    <span class="tab-icon">🔑</span>
+    <span>Ключи</span>
+  </button>
+  <button class="tab" onclick="switchTab('stats')">
+    <span class="tab-icon">📊</span>
+    <span>Аналитика</span>
+  </button>
+  <button class="tab" onclick="switchTab('tools')">
+    <span class="tab-icon">⚙️</span>
+    <span>Сервис</span>
+  </button>
+</div>
+
+<!-- ===== PAGE: CREATE ===== -->
+<div class="page active" id="page-create">
+  <div class="page-title">Новый ключ</div>
+
+  <div class="conn-status">
+    <div class="conn-dot" id="connDot"></div>
+    <span id="connText">Подключение...</span>
+  </div>
+
+  <div class="card">
+    <div class="form-group">
+      <label class="form-label">Приложение</label>
+      <select class="form-select" id="appSelect" onchange="onAppChange()">
+        <option value="" disabled selected>Выберите приложение</option>
+        <option value="calculator">🧮 Калькулятор</option>
+        <option value="calendar">📅 Календарь</option>
+        <option value="bundle">🎁 Комплект (оба)</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Тариф</label>
+      <select class="form-select" id="planSelect" onchange="onPlanChange()">
+        <option value="" disabled selected>Сначала выберите приложение</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Имя покупателя</label>
+      <input type="text" class="form-input" id="buyerName" placeholder="Иван Иванов" autocomplete="off">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Сумма (₽)</label>
+      <input type="number" class="form-input" id="paymentAmount" placeholder="0" inputmode="numeric">
+    </div>
+
+    <button class="btn btn-primary" id="generateBtn" onclick="generateKey()">Создать ключ</button>
+  </div>
+
+  <div class="key-display" id="keyDisplay" style="display:none;"></div>
+  <button class="btn btn-secondary" id="copyBtn" style="display:none;" onclick="copyKey()">📋 Копировать ключ</button>
+</div>
+
+<!-- ===== PAGE: LICENSES ===== -->
+<div class="page" id="page-licenses">
+  <div class="page-title">Ключи</div>
+
+  <div class="search-bar">
+    <input type="text" class="form-input" id="searchInput" placeholder="Поиск по имени, ключу, приложению..." oninput="filterLicenses()">
+  </div>
+
+  <div class="filter-row">
+    <button class="filter-chip active" data-filter="all" onclick="setFilter('all', this)">Все</button>
+    <button class="filter-chip" data-filter="active" onclick="setFilter('active', this)">Активные</button>
+    <button class="filter-chip" data-filter="pending" onclick="setFilter('pending', this)">Ожидают</button>
+    <button class="filter-chip" data-filter="expired" onclick="setFilter('expired', this)">Истекшие</button>
+  </div>
+
+  <div id="licensesList">
+    <div style="text-align:center;padding:40px;color:var(--text2);">Загрузка...</div>
+  </div>
+</div>
+
+<!-- ===== PAGE: STATS ===== -->
+<div class="page" id="page-stats">
+  <div class="page-title">Аналитика</div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-value" id="totalCount">-</div>
+      <div class="stat-label">Всего</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="activeCount">-</div>
+      <div class="stat-label">Активных</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="pendingCount">-</div>
+      <div class="stat-label">Ожидают</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="totalRevenue">-</div>
+      <div class="stat-label">Доход</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">По приложениям</div>
+    <div id="appStats">
+      <div style="text-align:center;padding:20px;color:var(--text2);">Загрузка...</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PAGE: TOOLS ===== -->
+<div class="page" id="page-tools">
+  <div class="page-title">Сервис</div>
+
+  <div class="card">
+    <div class="card-title">💾 Резервное копирование</div>
+    <button class="btn btn-secondary" style="margin-top:0;" onclick="exportDatabase()">📤 Экспорт базы (JSON)</button>
+    <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">📥 Импорт базы</button>
+    <input type="file" id="importFile" accept=".json" style="display:none;" onchange="handleImportFile(event)">
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔄 Данные</div>
+    <button class="btn btn-secondary" style="margin-top:0;" onclick="refreshLicenses()">Обновить все данные</button>
+  </div>
+</div>
+
+<!-- ===== EDIT MODAL ===== -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Редактирование</div>
+    <div id="editModalContent"></div>
+  </div>
+</div>
+
+<!-- ===== TOAST ===== -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================
+// CONFIG & STATE
+// ============================================
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyBEL4XCzjmHaqu4RbTqNzEKPi2Vfc4LXSI",
+  authDomain: "calc76.firebaseapp.com",
+  databaseURL: "https://calc76-default-rtdb.firebaseio.com",
+  projectId: "calc76",
+  storageBucket: "calc76.firebasestorage.app",
+  messagingSenderId: "972929668805",
+  appId: "1:972929668805:web:de4aa4097f03b97d39c2ac"
+};
+
+const PRODUCTS = {
+  calculator: {
+    name: '🧮 Калькулятор',
+    plans: [
+      { id: 'trial_7d', label: '7 дней (пробный)', price: 0, days: 7 },
+      { id: '1m', label: '1 месяц', price: 390, days: 30 },
+      { id: '3m', label: '3 месяца', price: 990, days: 90 },
+      { id: '6m', label: '6 месяцев', price: 1690, days: 180 },
+      { id: '1y', label: '1 год', price: 2490, days: 365 },
+      { id: '2y', label: '2 года', price: 3990, days: 730 },
+      { id: 'lifetime', label: 'Бессрочно', price: 7990, days: 999999 }
+    ]
+  },
+  calendar: {
+    name: '📅 Календарь',
+    plans: [
+      { id: 'trial_7d', label: '7 дней (пробный)', price: 0, days: 7 },
+      { id: '1m', label: '1 месяц', price: 390, days: 30 },
+      { id: '3m', label: '3 месяца', price: 990, days: 90 },
+      { id: '6m', label: '6 месяцев', price: 1690, days: 180 },
+      { id: '1y', label: '1 год', price: 2490, days: 365 },
+      { id: '2y', label: '2 года', price: 3990, days: 730 },
+      { id: 'early', label: 'Ранний доступ', price: 3990, days: 999999 },
+      { id: 'lifetime', label: 'Бессрочно', price: 6990, days: 999999 }
+    ]
+  },
+  bundle: {
+    name: '🎁 Комплект',
+    plans: [
+      { id: 'bundle_1m', label: '1 месяц', price: 590, days: 30 },
+      { id: 'bundle_3m', label: '3 месяца', price: 1490, days: 90 },
+      { id: 'bundle_6m', label: '6 месяцев', price: 2490, days: 180 },
+      { id: 'bundle_1y', label: '1 год', price: 3690, days: 365 },
+      { id: 'bundle_2y', label: '2 года', price: 5990, days: 730 },
+      { id: 'bundle_lifetime', label: 'Бессрочно', price: 9990, days: 999999 }
+    ]
+  }
+};
+
+let firebaseDB = null;
+let firebaseEnabled = false;
+let currentKey = '';
+let allLicenses = [];
+let currentFilter = 'all';
+let _countdownInterval = null;
+
+// ============================================
+// TABS
+// ============================================
+function switchTab(tabId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + tabId).classList.add('active');
+  event.currentTarget.classList.add('active');
+
+  if (tabId === 'licenses' || tabId === 'stats') {
+    renderAll();
+  }
+}
+
+// ============================================
+// TOAST
+// ============================================
+function showToast(msg, duration = 2500) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), duration);
+}
+
+// ============================================
+// FIREBASE
+// ============================================
+async function initFirebase() {
+  const dot = document.getElementById('connDot');
+  const text = document.getElementById('connText');
+
+  try {
+    firebase.initializeApp(FIREBASE_CONFIG);
+    firebaseDB = firebase.database();
+    await firebaseDB.ref('.info/connected').once('value');
+    firebaseEnabled = true;
+    dot.className = 'conn-dot ok';
+    text.textContent = 'Firebase подключён';
+    await refreshLicenses();
+  } catch (err) {
+    dot.className = 'conn-dot err';
+    text.textContent = 'Ошибка подключения';
+    document.getElementById('generateBtn').disabled = true;
+  }
+}
+
+// ============================================
+// APP/PLAN SELECTORS
+// ============================================
+function onAppChange() {
+  const appId = document.getElementById('appSelect').value;
+  const planSelect = document.getElementById('planSelect');
+  const product = PRODUCTS[appId];
+
+  planSelect.innerHTML = '<option value="" disabled selected>Выберите тариф</option>';
+  if (product) {
+    product.plans.forEach(p => {
+      const opt = document.createElement('option');
+      opt.value = p.id;
+      opt.textContent = `${p.label} — ${p.price === 0 ? 'бесплатно' : p.price + ' ₽'}`;
+      opt.dataset.price = p.price;
+      opt.dataset.days = p.days;
+      planSelect.appendChild(opt);
+    });
+  }
+  document.getElementById('paymentAmount').value = '';
+}
+
+function onPlanChange() {
+  const planSelect = document.getElementById('planSelect');
+  const selected = planSelect.selectedOptions[0];
+  if (selected && selected.dataset.price !== undefined) {
+    document.getElementById('paymentAmount').value = selected.dataset.price;
+  }
+}
+
+// ============================================
+// KEY GENERATION
+// ============================================
+function generateLicenseKey() {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let key = '';
+  for (let i = 0; i < 3; i++) {
+    for (let j = 0; j < 4; j++) key += chars[Math.floor(Math.random() * chars.length)];
+    if (i < 2) key += '-';
+  }
+  let sum = 0;
+  const data = key.replace(/-/g, '');
+  for (let i = 0; i < data.length; i++) sum += data.charCodeAt(i);
+  return key + '-' + (sum % 10000).toString(36).toUpperCase().padStart(4, '0');
+}
+
+async function generateKey() {
+  const appId = document.getElementById('appSelect').value;
+  const planSelect = document.getElementById('planSelect');
+  const selected = planSelect.selectedOptions[0];
+  const name = document.getElementById('buyerName').value.trim();
+
+  if (!appId) { showToast('Выберите приложение'); return; }
+  if (!selected || !selected.value) { showToast('Выберите тариф'); return; }
+  if (!name) { showToast('Введите имя покупателя'); document.getElementById('buyerName').focus(); return; }
+  if (!firebaseEnabled) { showToast('Firebase не подключён'); return; }
+
+  const btn = document.getElementById('generateBtn');
+  btn.disabled = true;
+  btn.textContent = 'Создание...';
+
+  try {
+    currentKey = generateLicenseKey();
+    const product = PRODUCTS[appId];
+    const price = parseInt(document.getElementById('paymentAmount').value) || 0;
+    const days = parseInt(selected.dataset.days) || 365;
+
+    const licenseData = {
+      key: currentKey,
+      appName: product.name,
+      buyer: { name, id: '', platform: 'manual' },
+      payment: price,
+      currency: 'RUB',
+      expiryDays: days,
+      planLabel: selected.textContent.split(' — ')[0],
+      created: new Date().toISOString(),
+      activated: false,
+      deviceId: null,
+      installId: null,
+      activatedDate: null,
+      lastCheck: null,
+      paymentMethod: 'manual',
+      bundleId: null,
+      orderNumber: null
+    };
+
+    await firebaseDB.ref('licenses/' + currentKey.replace(/[\.#$\[\]]/g, '-')).set(licenseData);
+
+    document.getElementById('keyDisplay').textContent = currentKey;
+    document.getElementById('keyDisplay').style.display = 'flex';
+    document.getElementById('copyBtn').style.display = 'block';
+
+    // Reset form
+    document.getElementById('buyerName').value = '';
+    btn.textContent = '✅ Создан!';
+    btn.style.background = 'linear-gradient(135deg, #10b981, #34d399)';
+    setTimeout(() => {
+      btn.textContent = 'Создать ключ';
+      btn.style.background = '';
+    }, 2000);
+
+    await refreshLicenses();
+  } catch (err) {
+    showToast('Ошибка: ' + err.message);
+    btn.textContent = 'Создать ключ';
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function copyKey() {
+  navigator.clipboard.writeText(currentKey).then(() => showToast('✅ Ключ скопирован'));
+}
+
+// ============================================
+// LICENSES
+// ============================================
+async function refreshLicenses() {
+  if (!firebaseEnabled) return;
+  try {
+    const snap = await firebaseDB.ref('licenses').once('value');
+    allLicenses = Object.values(snap.val() || {});
+    renderAll();
+  } catch (err) {
+    showToast('Ошибка загрузки');
+  }
+}
+
+function renderAll() {
+  renderStats();
+  renderLicensesList();
+  renderAppStats();
+}
+
+function renderStats() {
+  const active = allLicenses.filter(l => l.activated && !isExpired(l));
+  const pending = allLicenses.filter(l => !l.activated);
+  const revenue = allLicenses.reduce((s, l) => s + (parseInt(l.payment) || 0), 0);
+
+  document.getElementById('totalCount').textContent = allLicenses.length;
+  document.getElementById('activeCount').textContent = active.length;
+  document.getElementById('pendingCount').textContent = pending.length;
+  document.getElementById('totalRevenue').textContent = revenue.toLocaleString('ru-RU') + ' ₽';
+}
+
+function isExpired(lic) {
+  if (!lic.activated || lic.expiryDays >= 999999) return false;
+  let exp;
+  if (lic.expiresAt) exp = new Date(lic.expiresAt);
+  else if (lic.activatedDate) {
+    exp = new Date(lic.activatedDate);
+    exp.setDate(exp.getDate() + (lic.expiryDays || 365));
+  } else return false;
+  return new Date() > exp;
+}
+
+function getExpiresDate(lic) {
+  if (lic.expiresAt) return new Date(lic.expiresAt);
+  if (lic.activatedDate) {
+    const d = new Date(lic.activatedDate);
+    d.setDate(d.getDate() + (lic.expiryDays || 365));
+    return d;
+  }
+  return null;
+}
+
+function setFilter(filter, el) {
+  currentFilter = filter;
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderLicensesList();
+}
+
+function renderLicensesList() {
+  if (_countdownInterval) { clearInterval(_countdownInterval); _countdownInterval = null; }
+
+  const search = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
+  let filtered = allLicenses.slice();
+
+  if (search) {
+    filtered = filtered.filter(l => {
+      const name = (l.buyer?.name || '').toLowerCase();
+      const key = (l.key || '').toLowerCase();
+      const app = (l.appName || '').toLowerCase();
+      const buyerId = (l.buyer?.id || '').toLowerCase();
+      return name.includes(search) || key.includes(search) || app.includes(search) || buyerId.includes(search);
+    });
+  }
+
+  if (currentFilter === 'active') filtered = filtered.filter(l => l.activated && !isExpired(l));
+  else if (currentFilter === 'pending') filtered = filtered.filter(l => !l.activated);
+  else if (currentFilter === 'expired') filtered = filtered.filter(l => isExpired(l));
+
+  filtered.sort((a, b) => new Date(b.created) - new Date(a.created));
+
+  const container = document.getElementById('licensesList');
+  if (filtered.length === 0) {
+    container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text2);">Ничего не найдено</div>';
+    return;
+  }
+
+  const timers = [];
+  container.innerHTML = filtered.map(lic => {
+    const expired = isExpired(lic);
+    const date = new Date(lic.created).toLocaleDateString('ru-RU');
+    const price = parseInt(lic.payment) || 0;
+    const isLifetime = lic.expiryDays >= 999999;
+
+    let expiryInfo = '';
+    if (isLifetime) {
+      expiryInfo = '∞ Бессрочно';
+    } else if (lic.activated) {
+      const exp = getExpiresDate(lic);
+      if (exp) {
+        if (expired) {
+          expiryInfo = `⛔ Истёк ${exp.toLocaleDateString('ru-RU')}`;
+        } else {
+          const daysLeft = Math.ceil((exp - new Date()) / 86400000);
+          const timerId = 'cd_' + lic.key.replace(/[^A-Z0-9]/gi, '_');
+          expiryInfo = `📅 ${exp.toLocaleDateString('ru-RU')} <span id="${timerId}" class="countdown"></span>`;
+          timers.push({ id: timerId, expiresDate: exp });
+        }
+      }
+    } else {
+      const days = lic.expiryDays || 365;
+      expiryInfo = days >= 999999 ? '∞ Бессрочно' : `${days} дн. (не активирован)`;
+    }
+
+    let statusBadge;
+    if (expired) statusBadge = '<span class="badge badge-expired">Истёк</span>';
+    else if (lic.activated) statusBadge = '<span class="badge badge-active">Активен</span>';
+    else statusBadge = '<span class="badge badge-pending">Ожидает</span>';
+
+    const safeKey = lic.key.replace(/'/g, "\\'");
+
+    return `
+      <div class="license-card ${expired ? 'expired' : ''}">
+        <div class="license-header">
+          <div>
+            <div class="license-app">${lic.appName || '—'}</div>
+            <div class="license-buyer">${lic.buyer?.name || '—'}</div>
+          </div>
+          ${statusBadge}
+        </div>
+        <div class="license-key">
+          <span>${lic.key}</span>
+          <button class="btn-small btn-secondary" onclick="navigator.clipboard.writeText('${safeKey}');showToast('Скопировано')" style="margin:0;padding:4px 8px;font-size:11px;">📋</button>
+        </div>
+        <div class="license-meta">
+          <span>${date}</span>
+          <span>${price > 0 ? price.toLocaleString('ru-RU') + ' ₽' : 'бесплатно'}</span>
+          <span>${expiryInfo}</span>
+        </div>
+        <div class="license-actions">
+          <button class="btn-small btn-secondary" onclick="openEditModal('${safeKey}')">✏️</button>
+          ${lic.activated ? `<button class="btn-small btn-secondary" onclick="unlinkDevice('${safeKey}')">📱✕</button>` : ''}
+          <button class="btn-small btn-danger" onclick="deleteLicense('${safeKey}')">🗑️</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  // Timers
+  if (timers.length > 0) {
+    function tick() {
+      const now = new Date();
+      timers.forEach(({ id, expiresDate }) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const ms = expiresDate - now;
+        if (ms <= 0) { clearInterval(_countdownInterval); refreshLicenses(); return; }
+        const d = Math.floor(ms / 86400000);
+        const h = Math.floor((ms % 86400000) / 3600000);
+        const m = Math.floor((ms % 3600000) / 60000);
+        const s = Math.floor((ms % 60000) / 1000);
+        const hh = (h < 10 ? '0' : '') + h;
+        const mm = (m < 10 ? '0' : '') + m;
+        const ss = (s < 10 ? '0' : '') + s;
+        el.textContent = d > 0 ? `${d}д ${hh}:${mm}:${ss}` : `${hh}:${mm}:${ss}`;
+        const hours = ms / 3600000;
+        el.style.color = hours < 1 ? '#ef4444' : hours < 24 ? '#f97316' : hours < 72 ? '#eab308' : '#22c55e';
+      });
+    }
+    tick();
+    _countdownInterval = setInterval(tick, 1000);
+  }
+}
+
+function renderAppStats() {
+  const data = {};
+  allLicenses.forEach(l => {
+    const app = l.appName || '—';
+    if (!data[app]) data[app] = { count: 0, revenue: 0, activated: 0 };
+    data[app].count++;
+    data[app].revenue += parseInt(l.payment) || 0;
+    if (l.activated) data[app].activated++;
+  });
+
+  const el = document.getElementById('appStats');
+  const entries = Object.entries(data).sort((a, b) => b[1].revenue - a[1].revenue);
+  if (entries.length === 0) {
+    el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text2);">Нет данных</div>';
+    return;
+  }
+
+  el.innerHTML = entries.map(([app, s]) => `
+    <div class="app-stat-card">
+      <div class="app-stat-header">
+        <span class="app-stat-name">${app}</span>
+        <span class="app-stat-revenue">${s.revenue.toLocaleString('ru-RU')} ₽</span>
+      </div>
+      <div class="app-stat-details">
+        <span>Продано: <b style="color:#fff">${s.count}</b></span>
+        <span>Активных: <b style="color:var(--green)">${s.activated}</b></span>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ============================================
+// EDIT MODAL
+// ============================================
+function openEditModal(key) {
+  const lic = allLicenses.find(l => l.key === key);
+  if (!lic) return;
+
+  const modal = document.getElementById('editModal');
+  const content = document.getElementById('editModalContent');
+
+  const hasExpiry = lic.expiryDays && lic.expiryDays < 999999;
+  const currentExpiry = lic.expiresAt ? new Date(lic.expiresAt).toISOString().split('T')[0] : '';
+
+  content.innerHTML = `
+    <div class="form-group">
+      <label class="form-label">Имя покупателя</label>
+      <input type="text" class="form-input" id="editName" value="${lic.buyer?.name || ''}">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Приложение</label>
+      <input type="text" class="form-input" id="editApp" value="${lic.appName || ''}">
+    </div>
+    ${hasExpiry ? `
+    <div class="form-group">
+      <label class="form-label">Дата истечения (${currentExpiry ? 'текущая: ' + new Date(lic.expiresAt).toLocaleDateString('ru-RU') : 'не активирован'})</label>
+      <input type="date" class="form-input" id="editExpiry" value="${currentExpiry}">
+    </div>` : ''}
+    <button class="btn btn-primary" onclick="saveEdit('${key.replace(/'/g, "\\'")}')">Сохранить</button>
+    <button class="btn btn-secondary" onclick="closeEditModal()">Отмена</button>
+  `;
+
+  modal.classList.add('show');
+  modal.onclick = e => { if (e.target === modal) closeEditModal(); };
+}
+
+function closeEditModal() {
+  document.getElementById('editModal').classList.remove('show');
+}
+
+async function saveEdit(key) {
+  try {
+    const keyRef = firebaseDB.ref('licenses/' + key.replace(/[\.#$\[\]]/g, '-'));
+    const update = {
+      'buyer/name': document.getElementById('editName').value.trim(),
+      'appName': document.getElementById('editApp').value.trim()
+    };
+    const expiryInput = document.getElementById('editExpiry');
+    if (expiryInput && expiryInput.value) {
+      update.expiresAt = new Date(expiryInput.value).toISOString();
+    }
+    await keyRef.update(update);
+    closeEditModal();
+    showToast('✅ Сохранено');
+    await refreshLicenses();
+  } catch (err) {
+    showToast('Ошибка: ' + err.message);
+  }
+}
+
+// ============================================
+// ACTIONS
+// ============================================
+async function unlinkDevice(key) {
+  if (!confirm('Отвязать устройство от этого ключа?')) return;
+  try {
+    const keyRef = firebaseDB.ref('licenses/' + key.replace(/[\.#$\[\]]/g, '-'));
+    await keyRef.update({ activated: false, deviceId: null, installId: null, activatedDate: null, lastCheck: null });
+    showToast('✅ Устройство отвязано');
+    await refreshLicenses();
+  } catch (err) { showToast('Ошибка: ' + err.message); }
+}
+
+async function deleteLicense(key) {
+  if (!confirm('Удалить ключ ' + key + '?')) return;
+  try {
+    await firebaseDB.ref('licenses/' + key.replace(/[\.#$\[\]]/g, '-')).remove();
+    showToast('✅ Удалено');
+    await refreshLicenses();
+  } catch (err) { showToast('Ошибка: ' + err.message); }
+}
+
+// ============================================
+// EXPORT / IMPORT
+// ============================================
+async function exportDatabase() {
+  if (!firebaseEnabled) { showToast('Firebase не подключён'); return; }
+  try {
+    const snap = await firebaseDB.ref('licenses').once('value');
+    const licenses = snap.val() || {};
+    if (!Object.keys(licenses).length) { showToast('База пуста'); return; }
+    const data = { version: '2.0', exported: new Date().toISOString(), totalLicenses: Object.keys(licenses).length, licenses };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `backup-${new Date().toISOString().split('T')[0]}.json`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+    showToast('✅ Экспортировано');
+  } catch (err) { showToast('Ошибка: ' + err.message); }
+}
+
+async function handleImportFile(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  if (!confirm('Импортировать данные? Существующие ключи с такими же ID будут перезаписаны.')) {
+    event.target.value = '';
+    return;
+  }
+  try {
+    const text = await file.text();
+    const data = JSON.parse(text);
+    const licenses = data.licenses || data;
+    if (typeof licenses !== 'object') throw new Error('Неверный формат файла');
+    await firebaseDB.ref('licenses').update(licenses);
+    showToast(`✅ Импортировано: ${Object.keys(licenses).length} ключей`);
+    await refreshLicenses();
+  } catch (err) {
+    showToast('Ошибка импорта: ' + err.message);
+  }
+  event.target.value = '';
+}
+
+function filterLicenses() {
+  renderLicensesList();
+}
+
+// ============================================
+// INIT
+// ============================================
+window.addEventListener('load', initFirebase);
+</script>
+</body>
+</html>
