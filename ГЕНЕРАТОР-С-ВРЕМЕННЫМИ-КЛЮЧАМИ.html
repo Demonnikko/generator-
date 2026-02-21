@@ -524,6 +524,125 @@
       text-align: center;
     }
     #app-content.locked { display: none; }
+
+    /* ===== DESKTOP ADAPTIVE ===== */
+    @media (min-width: 768px) {
+      body {
+        display: flex;
+        justify-content: center;
+      }
+
+      #app-content {
+        display: flex;
+        max-width: 1200px;
+        width: 100%;
+        min-height: 100vh;
+      }
+
+      /* Sidebar tabs */
+      .tabs {
+        position: fixed;
+        left: calc(50% - 600px);
+        top: 0;
+        bottom: 0;
+        right: auto;
+        width: 220px;
+        flex-direction: column;
+        border-top: none;
+        border-right: 1px solid var(--border);
+        padding: 32px 12px;
+        padding-bottom: 0;
+        gap: 4px;
+        z-index: 100;
+      }
+      .tab {
+        flex-direction: row;
+        justify-content: flex-start;
+        gap: 10px;
+        padding: 14px 16px;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 500;
+        transition: background 0.2s, color 0.2s;
+      }
+      .tab:hover { background: rgba(245,158,11,0.08); }
+      .tab.active { background: rgba(245,158,11,0.15); color: var(--gold); }
+      .tab-icon { font-size: 18px; }
+
+      /* Pages offset for sidebar */
+      .page {
+        margin-left: 220px;
+        padding: 32px 40px 40px;
+        max-width: 980px;
+        width: 100%;
+      }
+
+      .page-title { font-size: 32px; margin-bottom: 24px; }
+
+      /* Cards grid on desktop */
+      .license-card { padding: 20px; }
+      .license-header { margin-bottom: 12px; }
+      .license-app { font-size: 16px; }
+      .license-key { font-size: 13px; }
+      .license-meta { font-size: 13px; gap: 16px; }
+
+      /* Stats grid 4 columns */
+      .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 14px;
+      }
+      .stat-value { font-size: 30px; }
+
+      /* Forms wider */
+      .card { max-width: 560px; padding: 24px; }
+      .form-input, .form-select { padding: 12px 16px; font-size: 15px; }
+      .btn { padding: 14px; font-size: 15px; max-width: 560px; }
+
+      /* Search bar */
+      .search-bar { max-width: 480px; }
+
+      /* Key display */
+      .key-display { max-width: 560px; font-size: 22px; }
+
+      /* Modal centered on desktop */
+      .modal-overlay {
+        align-items: center;
+      }
+      .modal {
+        border-radius: 20px;
+        max-width: 480px;
+      }
+
+      /* Toast */
+      .toast {
+        left: auto;
+        right: 32px;
+        max-width: 360px;
+      }
+
+      /* Connection status */
+      .conn-status { margin-bottom: 20px; }
+    }
+
+    /* Large desktop */
+    @media (min-width: 1400px) {
+      .tabs {
+        left: calc(50% - 700px);
+        width: 260px;
+      }
+      .page {
+        margin-left: 260px;
+      }
+    }
+
+    /* Tablet portrait */
+    @media (min-width: 768px) and (max-width: 1023px) {
+      .tabs { width: 72px; padding: 24px 8px; }
+      .tabs .tab span:not(.tab-icon) { display: none; }
+      .tab { justify-content: center; padding: 14px; }
+      .tab-icon { font-size: 22px; }
+      .page { margin-left: 72px; padding: 24px 24px 32px; }
+    }
   </style>
 
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
