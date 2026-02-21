@@ -39,18 +39,18 @@
       overscroll-behavior: none;
     }
 
-    /* ===== TABS ===== */
+    /* ===== TABS (mobile bottom bar) ===== */
     .tabs {
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
       display: flex;
-      background: rgba(10,10,15,0.95);
+      background: rgba(10,10,15,0.98);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border-top: 1px solid var(--border);
-      padding-bottom: var(--safe-bottom);
+      padding-bottom: env(safe-area-inset-bottom, 0px);
       z-index: 100;
     }
     .tab {
@@ -59,7 +59,7 @@
       flex-direction: column;
       align-items: center;
       gap: 2px;
-      padding: 10px 4px 6px;
+      padding: 10px 4px 8px;
       color: var(--text2);
       font-size: 10px;
       font-weight: 500;
@@ -75,7 +75,10 @@
     /* ===== PAGES ===== */
     .page {
       display: none;
-      padding: calc(var(--safe-top) + 16px) 16px calc(70px + var(--safe-bottom) + 16px);
+      padding-top: calc(env(safe-area-inset-top, 0px) + 20px);
+      padding-left: 16px;
+      padding-right: 16px;
+      padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
       min-height: 100vh;
       min-height: 100dvh;
     }
@@ -433,7 +436,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 40px 20px;
+      padding: calc(env(safe-area-inset-top, 0px) + 40px) 20px calc(env(safe-area-inset-bottom, 0px) + 40px);
     }
     #lock-screen.hidden { display: none; }
     .lock-icon { font-size: 56px; margin-bottom: 20px; }
@@ -525,18 +528,18 @@
     }
     #app-content.locked { display: none; }
 
-    /* ===== DESKTOP ADAPTIVE ===== */
-    @media (min-width: 768px) {
+    /* ===== DESKTOP ADAPTIVE (1024px+) ===== */
+    @media (min-width: 1024px) {
       body {
         display: flex;
         justify-content: center;
       }
 
       #app-content {
-        display: flex;
         max-width: 1200px;
         width: 100%;
         min-height: 100vh;
+        position: relative;
       }
 
       /* Sidebar tabs */
@@ -553,95 +556,41 @@
         padding: 32px 12px;
         padding-bottom: 0;
         gap: 4px;
-        z-index: 100;
       }
       .tab {
+        flex: none;
         flex-direction: row;
         justify-content: flex-start;
         gap: 10px;
         padding: 14px 16px;
         border-radius: 12px;
         font-size: 14px;
-        font-weight: 500;
-        transition: background 0.2s, color 0.2s;
       }
       .tab:hover { background: rgba(245,158,11,0.08); }
-      .tab.active { background: rgba(245,158,11,0.15); color: var(--gold); }
+      .tab.active { background: rgba(245,158,11,0.15); }
       .tab-icon { font-size: 18px; }
 
-      /* Pages offset for sidebar */
       .page {
         margin-left: 220px;
         padding: 32px 40px 40px;
         max-width: 980px;
-        width: 100%;
       }
-
       .page-title { font-size: 32px; margin-bottom: 24px; }
-
-      /* Cards grid on desktop */
-      .license-card { padding: 20px; }
-      .license-header { margin-bottom: 12px; }
-      .license-app { font-size: 16px; }
-      .license-key { font-size: 13px; }
-      .license-meta { font-size: 13px; gap: 16px; }
-
-      /* Stats grid 4 columns */
-      .stats-grid {
-        grid-template-columns: repeat(4, 1fr);
-        gap: 14px;
-      }
+      .stats-grid { grid-template-columns: repeat(4, 1fr); gap: 14px; }
       .stat-value { font-size: 30px; }
-
-      /* Forms wider */
       .card { max-width: 560px; padding: 24px; }
-      .form-input, .form-select { padding: 12px 16px; font-size: 15px; }
-      .btn { padding: 14px; font-size: 15px; max-width: 560px; }
-
-      /* Search bar */
+      .btn { max-width: 560px; }
       .search-bar { max-width: 480px; }
-
-      /* Key display */
-      .key-display { max-width: 560px; font-size: 22px; }
-
-      /* Modal centered on desktop */
-      .modal-overlay {
-        align-items: center;
-      }
-      .modal {
-        border-radius: 20px;
-        max-width: 480px;
-      }
-
-      /* Toast */
-      .toast {
-        left: auto;
-        right: 32px;
-        max-width: 360px;
-      }
-
-      /* Connection status */
-      .conn-status { margin-bottom: 20px; }
+      .key-display { max-width: 560px; }
+      .modal-overlay { align-items: center; }
+      .modal { border-radius: 20px; max-width: 480px; }
+      .toast { left: auto; right: 32px; max-width: 360px; }
     }
 
     /* Large desktop */
     @media (min-width: 1400px) {
-      .tabs {
-        left: calc(50% - 700px);
-        width: 260px;
-      }
-      .page {
-        margin-left: 260px;
-      }
-    }
-
-    /* Tablet portrait */
-    @media (min-width: 768px) and (max-width: 1023px) {
-      .tabs { width: 72px; padding: 24px 8px; }
-      .tabs .tab span:not(.tab-icon) { display: none; }
-      .tab { justify-content: center; padding: 14px; }
-      .tab-icon { font-size: 22px; }
-      .page { margin-left: 72px; padding: 24px 24px 32px; }
+      .tabs { left: calc(50% - 700px); width: 260px; }
+      .page { margin-left: 260px; }
     }
   </style>
 
@@ -1072,7 +1021,7 @@ const PRODUCTS = {
       { id: '6m', label: '6 месяцев', price: 1690, days: 180 },
       { id: '1y', label: '1 год', price: 2490, days: 365 },
       { id: '2y', label: '2 года', price: 3990, days: 730 },
-      { id: 'lifetime', label: 'Бессрочно', price: 7990, days: 999999 }
+      { id: 'lifetime', label: 'Бессрочно', price: 7990, days: 36500 }
     ]
   },
   calendar: {
@@ -1084,8 +1033,8 @@ const PRODUCTS = {
       { id: '6m', label: '6 месяцев', price: 1690, days: 180 },
       { id: '1y', label: '1 год', price: 2490, days: 365 },
       { id: '2y', label: '2 года', price: 3990, days: 730 },
-      { id: 'early', label: 'Ранний доступ', price: 3990, days: 999999 },
-      { id: 'lifetime', label: 'Бессрочно', price: 6990, days: 999999 }
+      { id: 'early', label: 'Ранний доступ', price: 3990, days: 36500 },
+      { id: 'lifetime', label: 'Бессрочно', price: 6990, days: 36500 }
     ]
   },
   bundle: {
@@ -1096,7 +1045,7 @@ const PRODUCTS = {
       { id: 'bundle_6m', label: '6 месяцев', price: 2490, days: 180 },
       { id: 'bundle_1y', label: '1 год', price: 3690, days: 365 },
       { id: 'bundle_2y', label: '2 года', price: 5990, days: 730 },
-      { id: 'bundle_lifetime', label: 'Бессрочно', price: 9990, days: 999999 }
+      { id: 'bundle_lifetime', label: 'Бессрочно', price: 9990, days: 36500 }
     ]
   }
 };
@@ -1216,7 +1165,16 @@ async function generateKey() {
   btn.textContent = 'Создание...';
 
   try {
-    currentKey = generateLicenseKey();
+    // Generate unique key with duplicate check
+    let attempts = 0;
+    do {
+      currentKey = generateLicenseKey();
+      const existing = await firebaseDB.ref('licenses/' + currentKey.replace(/[\.#$\[\]]/g, '-')).once('value');
+      if (!existing.val()) break;
+      attempts++;
+    } while (attempts < 5);
+    if (attempts >= 5) { showToast('Не удалось создать уникальный ключ, попробуйте снова'); btn.disabled = false; btn.textContent = 'Создать ключ'; return; }
+
     const product = PRODUCTS[appId];
     const price = parseInt(document.getElementById('paymentAmount').value) || 0;
     const days = parseInt(selected.dataset.days) || 365;
@@ -1300,7 +1258,7 @@ function renderStats() {
 }
 
 function isExpired(lic) {
-  if (!lic.activated || lic.expiryDays >= 999999) return false;
+  if (!lic.activated || lic.expiryDays >= 36500) return false;
   let exp;
   if (lic.expiresAt) exp = new Date(lic.expiresAt);
   else if (lic.activatedDate) {
@@ -1360,7 +1318,7 @@ function renderLicensesList() {
     const expired = isExpired(lic);
     const date = new Date(lic.created).toLocaleDateString('ru-RU');
     const price = parseInt(lic.payment) || 0;
-    const isLifetime = lic.expiryDays >= 999999;
+    const isLifetime = lic.expiryDays >= 36500;
 
     let expiryInfo = '';
     if (isLifetime) {
@@ -1379,7 +1337,7 @@ function renderLicensesList() {
       }
     } else {
       const days = lic.expiryDays || 365;
-      expiryInfo = days >= 999999 ? '∞ Бессрочно' : `${days} дн. (не активирован)`;
+      expiryInfo = days >= 36500 ? '∞ Бессрочно' : `${days} дн. (не активирован)`;
     }
 
     let statusBadge;
@@ -1483,7 +1441,7 @@ function openEditModal(key) {
   const modal = document.getElementById('editModal');
   const content = document.getElementById('editModalContent');
 
-  const hasExpiry = lic.expiryDays && lic.expiryDays < 999999;
+  const hasExpiry = lic.expiryDays && lic.expiryDays < 36500;
   const currentExpiry = lic.expiresAt ? new Date(lic.expiresAt).toISOString().split('T')[0] : '';
 
   content.innerHTML = `
