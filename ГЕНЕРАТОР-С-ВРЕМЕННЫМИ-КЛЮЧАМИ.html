@@ -1450,6 +1450,10 @@ function openEditModal(key) {
       <input type="text" class="form-input" id="editName" value="${lic.buyer?.name || ''}">
     </div>
     <div class="form-group">
+      <label class="form-label">VK ID покупателя <span style="color:var(--text2);font-size:11px;">(например: vk_196783025)</span></label>
+      <input type="text" class="form-input" id="editVkId" value="${lic.buyer?.id || ''}" placeholder="vk_XXXXXXXXX">
+    </div>
+    <div class="form-group">
       <label class="form-label">Приложение</label>
       <input type="text" class="form-input" id="editApp" value="${lic.appName || ''}">
     </div>
@@ -1473,8 +1477,10 @@ function closeEditModal() {
 async function saveEdit(key) {
   try {
     const keyRef = firebaseDB.ref('licenses/' + key.replace(/[\.#$\[\]]/g, '-'));
+    const vkIdVal = document.getElementById('editVkId').value.trim();
     const update = {
       'buyer/name': document.getElementById('editName').value.trim(),
+      'buyer/id': vkIdVal || null,
       'appName': document.getElementById('editApp').value.trim()
     };
     const expiryInput = document.getElementById('editExpiry');
